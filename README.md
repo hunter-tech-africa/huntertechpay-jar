@@ -113,18 +113,6 @@ Service codes identify the mobile money provider and operation type.
 {COUNTRY}_{PROVIDER}_{OPERATION}
 ```
 
-### Examples
-
-```java
-// Cameroon - Orange Money Cashout
-"CM_OMCMR_CASHOUT"
-
-// Senegal - Wave Cashout
-"SN_WAVE_CASHOUT"
-
-// Ivory Coast - MTN Cashout
-"CI_MTN_CASHOUT"
-```
 
 ## API Reference
 
