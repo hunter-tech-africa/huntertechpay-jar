@@ -30,6 +30,14 @@
         </developer>
     </developers>
 
+    <scm>
+        <connection>scm:git:git://github.com/hunter-tech-africa/huntertechpay-jar.git</connection>
+        <developerConnection>scm:git:ssh://github.com:hunter-tech-africa/huntertechpay-jar.git</developerConnection>
+        <url>https://github.com/hunter-tech-africa/huntertechpay-jar</url>
+    </scm>
+
+    <!-- Note: distributionManagement not needed with central-publishing-maven-plugin -->
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
@@ -132,6 +140,39 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <doclint>none</doclint>
+                    <source>11</source>
+                </configuration>
+            </plugin>
+
+            <!-- GPG Signing Plugin (Required for Maven Central) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Central Publishing Plugin (New Maven Central system) -->
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.6.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                    <autoPublish>true</autoPublish>
+                    <waitUntil>published</waitUntil>
+                </configuration>
             </plugin>
         </plugins>
     </build>
