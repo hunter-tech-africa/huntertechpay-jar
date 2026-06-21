@@ -7,7 +7,7 @@
 
     <groupId>com.huntertechpay</groupId>
     <artifactId>huntertechpay-java-sdk</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
 
     <name>HunterTechPay Java SDK</name>

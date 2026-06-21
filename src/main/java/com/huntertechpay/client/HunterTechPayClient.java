@@ -270,18 +270,36 @@ public class HunterTechPayClient {
         try {
             @SuppressWarnings("unchecked")
             Map<String, Object> errorData = objectMapper.readValue(responseBody, Map.class);
-            String message = (String) errorData.getOrDefault("detail", "Unknown error");
-            String errorCode = (String) errorData.get("error_code");
+
+            // Extract original API message (unmodified)
+            String apiMessage = (String) errorData.getOrDefault("detail",
+                errorData.getOrDefault("message",
+                    errorData.getOrDefault("error",
+                        errorData.getOrDefault("error_message", ""))));
+
+            String message = apiMessage.isEmpty() ? "Unknown error" : apiMessage;
+
+            // Extract error code from API
+            String errorCode = (String) errorData.getOrDefault("error_code",
+                errorData.get("code"));
+
+            // Extract request ID
+            String requestId = (String) errorData.get("request_id");
 
             if (statusCode == 401 || statusCode == 403) {
-                throw new AuthenticationException(message);
+                throw new AuthenticationException(message, statusCode, errorCode, errorData, apiMessage, requestId);
             } else if (statusCode == 400) {
-                throw new ValidationException(message, errorCode);
+                throw new ValidationException(message, statusCode, errorCode, errorData, apiMessage, requestId);
             } else {
-                throw new HunterTechPayException(message, statusCode, errorCode);
+                throw new HunterTechPayException(message, statusCode, errorCode, errorData, apiMessage, requestId);
             }
         } catch (IOException e) {
-            throw new HunterTechPayException("HTTP " + statusCode + ": " + responseBody, statusCode, null);
+            // If JSON parsing fails, store raw response
+            Map<String, Object> errorData = new HashMap<>();
+            errorData.put("raw_response", responseBody.substring(0, Math.min(1000, responseBody.length())));
+            String message = "HTTP " + statusCode + ": " + responseBody;
+
+            throw new HunterTechPayException(message, statusCode, null, errorData, responseBody, null);
         }
     }
 
